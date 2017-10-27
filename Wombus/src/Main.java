@@ -1,72 +1,42 @@
-import java.util.*;
-import java.io.FileReader;
+/**
+ * Hunt the Wumpus
+ * @author Justin Mattix and Dax Ewing
+ *
+ */
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Scanner;
 import java.io.FileNotFoundException;
-
+import java.util.*;
 public class Main
 {
-	private static int[] CaveRooms;
-	
-	public static int[] Layout(String filename) throws IOException
+	private static Scanner Actions;
+	public static void main(String[] args) throws FileNotFoundException
+	{
+		Cave player = new Cave();
+		System.out.println("Welcome to your Doom!");
+		System.out.println("I guess you'll want controls?");
+		System.out.println("To move to a cave, enter 'M' and the cave number you would like to go to ");
+		System.out.println("To shoot an arrow into a cave, enter 'S' and the case number.");
+		player.readCave();
+		Actions = new Scanner(System.in);
+		while(player.stillAlive() && player.hasWumpus())
 		{
-			Scanner fin = new Scanner(new FileReader(filename));
-			
-			int rooms = fin.nextInt();
-			
-			CaveRooms = new int[rooms];
-			
-			for(int i = 0; i < rooms; i++)
+			System.out.println(player.currentLocation());
+			String Choice = Actions.next();
+			int target = Actions.nextInt();
+			if(Choice.toLowerCase().charAt(0) == 's' && target >= 1 && target <= 3)
 			{
-				CaveRooms[i] = fin.nextInt();
+				System.out.println(player.shootArrow(target));
 			}
-			fin.close();
-			
-			Arrays.sort(CaveRooms);
-			
-			return CaveRooms;
+			else if(Choice.toLowerCase().charAt(0) == 'm' && target >=1 && target >= 3)
+			{
+				System.out.println(player.playerMove(target));
+			}
+			else
+			{
+				System.out.print("You walk into a wall, you shake your head... Try Again");
+			}
 		}
-		public int[] getRandomCaves;
-		
-		int numcaves = CaveRooms.length;
-		
-		public int[] enemy = new int[numcaves-1]; //temp array that wholes the num of caves - 1
-		
-		ArrayList<Integer> randomCave = new ArrayList<Integer>();
-		{ //create an array list
-		//starts at 2 to avoid placing "enemies" in starter cave
-		for (int i=2; i < CaveRooms.length + 1; i++)
-		{
-			randomCave.add(i);
-		}
-		
-		Collections.shuffle(randomCave); //shuffle the contents of the arraylis
-		
-		for (int i = 0; i < CaveRooms.length-1; i++)
-		{
-			enemy[i] = randomCave.get(i); //put shuffled array into temp array
-		}
-	}
-	
-	    
-
-	enum Danger
-	{
-		Wumpus("There is a foul stench, that smelly smell that smells smelly"),
-		Bats("You hear the sound of wings flapping"),
-		Holes("A cold draft washes over you, you curse because you forgot your mittens"),
-		Spider("You hear clicking and spinning, and feel a shiver down your back. You always hated spiders");
-		private String warning;
-		Danger(String warning)
-		{
-			this.warning = warning;
-		}
-		
-	}
-	public static void main(String[] args)
-	{
-		System.out.println(CaveRooms);
+		System.out.println("Game Over");
 	}
 }
 
